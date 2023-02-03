@@ -1,0 +1,27 @@
+.card {
+	box-sizing: border-box;
+	list-style: none;
+	text-align: center;
+	width: 100%;
+	height: 100%;
+	transition: 1s;
+	background-color: #3e5fad;
+	border-radius: 1em;
+	padding: 0.1em;
+}
+
+.card img {
+	width: 100%;
+	height: auto;
+	border-radius: 1em 1em 0 0;
+	box-shadow: 0.1em 0.1em 1em 0.1em rgba(0, 0, 0, 0.279);
+	background-color: #76a1fd;
+}
+
+.card div {
+	padding: 0.5em;
+}
+
+.card:hover {
+	filter: brightness(0.7);
+}
