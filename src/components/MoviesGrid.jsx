@@ -1,8 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { MovieCard } from './MovieCard';
-import styles from './MoviesGrid.module.css';
 import { get } from '../utils/httpClient';
 import { Loader } from './Loader';
+import styled from 'styled-components';
+
+const ListContainer = styled.ul`
+	width: 100%;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, 14em);
+	gap: 2em;
+	justify-content: center;
+	margin: 1em 0;
+	@media (max-width: 560px) {
+		& {
+			grid-template-columns: 100%;
+		}
+	}
+`;
 
 export const MoviesGrid = () => {
 	const [movies, setMovies] = useState([]);
@@ -12,24 +26,26 @@ export const MoviesGrid = () => {
 		setLoader(true);
 		get('/discover/movie').then((data) => {
 			setMovies(data.results);
-			setLoader(false)
+			setLoader(false);
 		});
 	}, []);
 
 	if (loader) {
-		return <Loader />
+		return <Loader />;
 	}
 
 	return (
-		<ul className={styles.listContainer}>
-			{movies.map((movie) => (
-				<MovieCard
-					key={movie.id}
-					title={movie.title}
-					image={movie.poster_path}
-					id={movie.id}
-				/>
-			))}
-		</ul>
+		<>
+			<ListContainer>
+				{movies.map((movie) => (
+					<MovieCard
+						key={movie.id}
+						title={movie.title}
+						image={movie.poster_path}
+						id={movie.id}
+					/>
+				))}
+			</ListContainer>
+		</>
 	);
 };

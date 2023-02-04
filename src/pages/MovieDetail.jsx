@@ -1,10 +1,115 @@
 import React, { useEffect, useState } from 'react';
-import styles from './MovieDetail.module.css';
 import { Link, useParams } from 'react-router-dom';
 import { get } from '../utils/httpClient';
 import { Loader } from '../components/Loader';
-// import {Loader} from '../components/Loader'
+import styled from 'styled-components';
 
+const Main = styled.main`
+	padding: 2em 0;
+	margin-top: 2em;
+`;
+
+const Title = styled.h2`
+	text-align: center;
+	font-size: 1.5em;
+`;
+
+const DetailsContainer = styled.div`
+	box-sizing: border-box;
+	padding: 0 1em;
+	display: flex;
+	justify-content: center;
+	gap: 1em;
+	margin: 1em 0;
+
+	@media (max-width: 725px) {
+		& {
+			flex-direction: column;
+			align-items: center;
+			width: 100%;
+			margin-bottom: 2em;
+		}
+	}
+`;
+
+const Image = styled.img`
+	border-radius: 1em;
+	box-shadow: 0.1em 0.1em 1em 0.1em rgba(0, 0, 0, 0.279);
+	max-width: 20em;
+	height: auto;
+	width: 100%;
+`;
+
+const Detail = styled.div`
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	text-align: justify;
+	font-size: 1em;
+	gap: 1em;
+	max-width: 20em;
+	height: auto;
+`;
+
+const BtnContainer = styled(Link)`
+	text-decoration: none;
+`;
+
+const Btn = styled.button`
+	margin-top: 1em;
+	width: 100%;
+	background: #5153ff;
+	color: white;
+	font-family: inherit;
+	padding: 0.35em;
+	padding-left: 1.2em;
+	font-size: 17px;
+	font-weight: 500;
+	border-radius: 0.9em;
+	border: none;
+	letter-spacing: 0.05em;
+	display: flex;
+	align-items: center;
+	box-shadow: 0.1em 0.1em 0.6em 0.2em #6186d76b;
+	overflow: hidden;
+	position: relative;
+	height: 2.8em;
+	padding-right: 3.3em;
+
+	& div {
+		background: white;
+		margin-left: 1em;
+		position: absolute;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		height: 2.2em;
+		width: 2.2em;
+		border-radius: 0.7em;
+		box-shadow: 0.1em 0.1em 0.6em 0.2em #6186d7;
+		right: 0.3em;
+		transition: all 0.3s;
+		rotate: 180deg;
+	}
+
+	&:hover div {
+		width: calc(100% - 0.6em);
+	}
+
+	& div svg {
+		width: 1.1em;
+		transition: transform 0.3s;
+		color: #3e5fad;
+	}
+
+	&:hover div svg {
+		transform: translateX(0.1em);
+	}
+
+	&:active div {
+		transform: scale(0.95);
+	}
+`;
 
 export const MovieDetail = () => {
 	const { movieId } = useParams();
@@ -12,34 +117,32 @@ export const MovieDetail = () => {
 	const [loader, setLoader] = useState(true);
 
 	useEffect(() => {
-		setLoader(true)
+		setLoader(true);
 		get('/movie/' + movieId).then((data) => {
-			setLoader(false)
+			setLoader(false);
 			setMovie(data);
 		});
 	}, [movieId]);
 
 	if (loader) {
-		return <Loader />
+		return <Loader />;
 	}
 
-	if (!movie) {
-		return null;
-	}
+	// if (!movie) {
+	// 	return null;
+	// } se quita asumiendo que no van haber errores en el fetch
 
 	const imageUrl = 'https://image.tmdb.org/t/p/w500' + movie.poster_path;
+	
 	return (
-		<>
-			<main>
-				{/* <Loader /> */}
-				<h2 className={styles.title}>Description</h2>
-				<div className={styles.detailsContainer}>
-					<img
-						className={`${styles.col} + ${styles.movieImage}`}
+			<Main>
+				<Title>Description</Title>
+				<DetailsContainer>
+					<Image
 						src={imageUrl}
 						alt={movie.title}
 					/>
-					<div className={`${styles.col} ${styles.movieDetail}`}>
+					<Detail>
 						<p>
 							<strong>Title: </strong>
 							{movie.title}
@@ -52,10 +155,10 @@ export const MovieDetail = () => {
 							<strong>Description: </strong>
 							{movie.overview}
 						</p>
-						<Link to={'/'} className="link">
-							<button className={styles.btn}>
+						<BtnContainer to={'/'}>
+							<Btn>
 								Ver otras películas
-								<div className={styles.icon}>
+								<div>
 									<svg
 										height="24"
 										width="24"
@@ -69,11 +172,10 @@ export const MovieDetail = () => {
 										></path>
 									</svg>
 								</div>
-							</button>
-						</Link>
-					</div>
-				</div>
-			</main>
-		</>
+							</Btn>
+						</BtnContainer>
+					</Detail>
+				</DetailsContainer>
+			</Main>
 	);
 };
