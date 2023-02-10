@@ -1,7 +1,10 @@
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React from 'react';
+import React, { useState } from 'react';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router';
 import styled from 'styled-components';
+import { useQuery } from '../hooks/useQuery';
 
 const Form = styled.form`
 	align-items: center;
@@ -10,11 +13,15 @@ const Form = styled.form`
 	margin: 1em 0;
 	width: 100%;
 `;
+
 const SearchBox = styled.div`
 	align-items: center;
 	display: flex;
 	justify-content: center;
+	max-width: 1200px;
+	width: 80%;
 `;
+
 const InputWrapper = styled.div`
 	--width-of-input: 100%;
 	--border-height: 1px;
@@ -22,9 +29,10 @@ const InputWrapper = styled.div`
 	--border-after-color: #5153ff;
 	--input-hovered-color: #69696b21;
 	position: relative;
-	min-width: 250px;
+	min-width: 100%;
 	width: var(--width-of-input);
 `;
+
 const Input = styled.input`
 	color: #fff;
 	font-size: 1rem;
@@ -48,6 +56,7 @@ const Input = styled.input`
 		width: 100%;
 	}
 `;
+
 const Span = styled.span`
 	position: absolute;
 	background: var(--border-after-color);
@@ -57,9 +66,12 @@ const Span = styled.span`
 	left: 0;
 	transition: 0.3s;
 `;
+
 const Btn = styled.button`
 	padding-right: 1em;
+	border: none;
 `;
+
 const StyledFontAwesomeIcon = styled(FontAwesomeIcon)`
 	color: white;
 	font-size: 1.5rem;
@@ -67,15 +79,37 @@ const StyledFontAwesomeIcon = styled(FontAwesomeIcon)`
 `;
 
 export const Search = () => {
-	
+	const [input, setInput] = useState('');
+	const navigate = useNavigate();
+
+	const query = useQuery();
+	const search = query.get('search');
+
+	useEffect(() => {
+		search ? setInput(search) : setInput('');
+	}, [search]);
+
+	const handlerSubmit = (e) => {
+		e.preventDefault();
+		navigate('/?search=' + input);
+	};
+	const handlerChange = (e) => {
+		setInput(e.target.value);
+	};
 	return (
-		<Form>
+		<Form onSubmit={handlerSubmit}>
 			<SearchBox>
 				<Btn type="submit">
 					<StyledFontAwesomeIcon icon={faMagnifyingGlass} />
 				</Btn>
-				<InputWrapper>
-					<Input placeholder="What are you looking for?" required type="text" />
+				<InputWrapper id="search">
+					<Input
+						placeholder="What are you looking for?"
+						required
+						type="text"
+						value={input}
+						onChange={handlerChange}
+					/>
 					<Span></Span>
 				</InputWrapper>
 			</SearchBox>

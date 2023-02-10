@@ -1,9 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { MovieCard } from './MovieCard';
+import { MovieCard } from '../components/MovieCard';
 import { get } from '../utils/httpClient';
-import { Loader } from './Loader';
+import { Loader } from '../components/Loader';
 import styled from 'styled-components';
 import InfiniteScroll from 'react-infinite-scroll-component';
+
+const Main = styled.main`
+	padding: 2em;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	margin-top: 2em;
+
+	@media (max-width: 560px) {
+		padding: 2em 0.5em 1em 0.5em;
+	}
+`;
 
 const MoviesContainer = styled.div`
 	max-width: 1248px;
@@ -31,57 +45,46 @@ const Title = styled.h1`
 	text-align: center;
 `;
 
-const NotFound = styled.p`
-	margin-top: 3em;
-`;
-
-export const MoviesGrid = ({ search }) => {
+export const Series = () => {
 	const [movies, setMovies] = useState([]);
 	const [loader, setLoader] = useState(true);
 	const [hasMore, setHasMore] = useState(true);
 	const [page, setPage] = useState(1);
-
 	useEffect(() => {
-		const searchUrl = search
-			? '/search/movie?query=' + search + '&page=' + page
-			: '/discover/movie?page=' + page;
+		const searchUrl = '/discover/tv?page=' + page;
 		get(searchUrl).then((data) => {
 			setMovies((prevData) => prevData.concat(data.results));
 			setHasMore(page < data.total_pages);
 			setLoader(false);
 		});
-	}, [page, search]);
-
+	}, [page]);
 	if (loader) {
 		return <Loader />;
 	}
-
-	if (movies.length === 0) {
-		return <NotFound>We didn't find anything related to {search}</NotFound>;
-	}
-
 	return (
-		<MoviesContainer>
-			<Title>Popular Searches</Title>
-			<InfiniteScroll
-				dataLength={movies.length}
-				hasMore={hasMore}
-				next={() => setPage((prePage) => prePage + 1)}
-				loader={<Loader />}
-				scrollThreshold={0.9}
-				endMessage={<p>No hay más peliculas</p>}
-			>
-				<ListContainer>
-					{movies?.map((movie) => (
-						<MovieCard
-							key={movie.id}
-							title={movie.title}
-							image={movie.poster_path}
-							id={movie.id}
-						/>
-					))}
-				</ListContainer>
-			</InfiniteScroll>
-		</MoviesContainer>
+		<Main>
+			<MoviesContainer>
+				<Title>Popular Series</Title>
+				<InfiniteScroll
+					dataLength={movies.length}
+					hasMore={hasMore}
+					next={() => setPage((prePage) => prePage + 1)}
+					loader={<Loader />}
+					scrollThreshold={0.9}
+					endMessage={<p>No hay más peliculas</p>}
+				>
+					<ListContainer>
+						{movies?.map((movie) => (
+							<MovieCard
+								key={movie.id}
+								title={movie.title}
+								image={movie.poster_path}
+								id={movie.id}
+							/>
+						))}
+					</ListContainer>
+				</InfiniteScroll>
+			</MoviesContainer>
+		</Main>
 	);
 };

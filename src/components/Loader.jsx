@@ -2,8 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 const LoaderContainer = styled.div`
-	width: 100%;
-	height: 100vh;
+	margin: 1em;
 	display: flex;
 	justify-content: center;
 	align-items: center;
