@@ -3,13 +3,21 @@ import { Link, useParams } from 'react-router-dom';
 import { get } from '../utils/httpClient';
 import { Loader } from '../components/Loader';
 import styled from 'styled-components';
+import notImage from '../assets/imagenf.jpg';
+import { NotFound } from '../components/NotFound';
 
 const Main = styled.main`
 	padding: 2em 0;
 	margin-top: 2em;
+	@media (max-width: 725px) {
+		& {
+			margin-top: 0em;
+		}
+	}
 `;
 
 const Title = styled.h2`
+	margin-top: 2em;
 	text-align: center;
 	font-size: 1.5em;
 `;
@@ -115,12 +123,20 @@ export const MovieDetail = () => {
 	const { movieId } = useParams();
 	const [movie, setMovie] = useState(null);
 	const [loader, setLoader] = useState(true);
+	const [notFound, setNotFound] = useState(false);
 
 	useEffect(() => {
 		setLoader(true);
 		get('/movie/' + movieId).then((data) => {
-			setLoader(false);
-			setMovie(data);
+			console.log(data);
+			if (!data.title) {
+				setLoader(false);
+				return setNotFound(true);
+			} else {
+				setLoader(false);
+				setMovie(data);
+				console.log(data);
+			}
 		});
 	}, [movieId]);
 
@@ -128,54 +144,54 @@ export const MovieDetail = () => {
 		return <Loader />;
 	}
 
-	// if (!movie) {
-	// 	return null;
-	// } se quita asumiendo que no van haber errores en el fetch
+	if (notFound) {
+		return <NotFound />;
+	}
 
 	const imageUrl = 'https://image.tmdb.org/t/p/w500' + movie.poster_path;
-	
+
 	return (
-			<Main>
-				<Title>Description</Title>
-				<DetailsContainer>
-					<Image
-						src={imageUrl}
-						alt={movie.title}
-					/>
-					<Detail>
-						<p>
-							<strong>Title: </strong>
-							{movie.title}
-						</p>
-						<p>
-							<strong>Genres: </strong>
-							{movie.genres.map((genre) => genre.name).join(', ')}
-						</p>
-						<p>
-							<strong>Description: </strong>
-							{movie.overview}
-						</p>
-						<BtnContainer to={'/'}>
-							<Btn>
-								Ver otras películas
-								<div>
-									<svg
-										height="24"
-										width="24"
-										viewBox="0 0 24 24"
-										xmlns="http://www.w3.org/2000/svg"
-									>
-										<path d="M0 0h24v24H0z" fill="none"></path>
-										<path
-											d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z"
-											fill="currentColor"
-										></path>
-									</svg>
-								</div>
-							</Btn>
-						</BtnContainer>
-					</Detail>
-				</DetailsContainer>
-			</Main>
+		<Main>
+			<Title>Description</Title>
+			<DetailsContainer>
+				<Image
+					src={movie.poster_path ? imageUrl : notImage}
+					alt={movie?.title}
+				/>
+				<Detail>
+					<p>
+						<strong>Title: </strong>
+						{movie?.title}
+					</p>
+					<p>
+						<strong>Genres: </strong>
+						{movie?.genres.map((genre) => genre.name).join(', ')}
+					</p>
+					<p>
+						<strong>Description: </strong>
+						{movie?.overview}
+					</p>
+					<BtnContainer to={'/'}>
+						<Btn>
+							Find another movie
+							<div>
+								<svg
+									height="24"
+									width="24"
+									viewBox="0 0 24 24"
+									xmlns="http://www.w3.org/2000/svg"
+								>
+									<path d="M0 0h24v24H0z" fill="none"></path>
+									<path
+										d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z"
+										fill="currentColor"
+									></path>
+								</svg>
+							</div>
+						</Btn>
+					</BtnContainer>
+				</Detail>
+			</DetailsContainer>
+		</Main>
 	);
 };
