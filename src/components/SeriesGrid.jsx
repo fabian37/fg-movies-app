@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { MovieCard } from './MovieCard';
 import { get } from '../utils/httpClient';
 import { Loader } from './Loader';
 import styled from 'styled-components';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { SerieCard } from './SerieCard';
 
 const MoviesContainer = styled.div`
 	max-width: 1248px;
@@ -35,18 +35,19 @@ const NotFound = styled.p`
 	margin-top: 3em;
 `;
 
-export const MoviesGrid = ({ search }) => {
-	const [movies, setMovies] = useState([]);
+export const SeriesGrid = ({ search }) => {
+	const [series, setSeries] = useState([]);
 	const [loader, setLoader] = useState(true);
 	const [hasMore, setHasMore] = useState(true);
 	const [page, setPage] = useState(1);
 
 	useEffect(() => {
 		const searchUrl = search
-			? '/search/movie?query=' + search + '&page=' + page
-			: '/discover/movie?page=' + page;
+			? '/search/tv?query=' + search + '&page=' + page
+			: '/discover/tv?page=' + page;
 		get(searchUrl).then((data) => {
-			setMovies((prevData) => prevData.concat(data.results));
+			setSeries((prevData) => prevData.concat(data.results));
+			console.log(data.results);
 			setHasMore(page < data.total_pages);
 			setLoader(false);
 		});
@@ -56,7 +57,7 @@ export const MoviesGrid = ({ search }) => {
 		return <Loader />;
 	}
 
-	if (movies.length === 0) {
+	if (series.length === 0) {
 		return <NotFound>We didn't find anything related to {search}</NotFound>;
 	}
 
@@ -64,19 +65,19 @@ export const MoviesGrid = ({ search }) => {
 		<MoviesContainer>
 			<Title>Popular Searches</Title>
 			<InfiniteScroll
-				dataLength={movies.length}
+				dataLength={series.length}
 				hasMore={hasMore}
 				next={() => setPage((prePage) => prePage + 1)}
 				loader={<Loader />}
 				scrollThreshold={0.9}
 			>
 				<ListContainer>
-					{movies?.map((movie) => (
-						<MovieCard
-							key={movie.id}
-							title={movie.title}
-							image={movie.poster_path}
-							id={movie.id}
+					{series?.map((serie) => (
+						<SerieCard
+							key={serie.id}
+							title={serie.name}
+							image={serie.poster_path}
+							id={serie.id}
 						/>
 					))}
 				</ListContainer>

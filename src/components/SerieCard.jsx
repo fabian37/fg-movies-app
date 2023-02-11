@@ -68,10 +68,10 @@ const SubTitle = styled.span`
 	font-size: 0.8em;
 `;
 
-export const MovieCard = ({ title, image, id }) => {
+export const SerieCard = ({ title, image, id }) => {
 	const imageUrl = 'https://image.tmdb.org/t/p/w300' + image;
 	return (
-		<Link to={'/movies/' + id}>
+		<Link to={'/series/' + id}>
 			<Card>
 				<img src={image ? imageUrl : notFound} alt={title} />
 				<Detail>
