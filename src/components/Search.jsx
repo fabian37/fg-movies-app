@@ -1,9 +1,8 @@
 import React from 'react';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useNavigate } from 'react-router';
 import styled from 'styled-components';
-import { useQuery } from '../hooks/useQuery';
+import { useSearchParams } from 'react-router-dom';
 
 const Form = styled.form`
 	align-items: center;
@@ -78,15 +77,14 @@ const StyledFontAwesomeIcon = styled(FontAwesomeIcon)`
 `;
 
 export const Search = () => {
-	const navigate = useNavigate();
-	const query = useQuery();
+	const [query, setQuery] = useSearchParams();
 	const search = query.get('search');
 	const handlerSubmit = (e) => {
 		e.preventDefault();
 	};
 	const handlerChange = (e) => {
 		const value = e.target.value;
-		navigate('/?search=' + value);
+		setQuery({ search: value });
 	};
 	return (
 		<Form onSubmit={handlerSubmit}>

@@ -1,5 +1,5 @@
 import { createContext, useState } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Nav } from './components/Nav';
 import { Home } from './pages/Home';
 import { MovieDetail } from './pages/MovieDetail';
@@ -24,7 +24,7 @@ function App() {
 						<Route path="/genres" element={<Genres key={genres} />} />
 						<Route path="/series" element={<Series key={genres} />} />
 						<Route path="/series/:serieId" element={<SerieDetail />} />
-						<Route path="*" element={<Home />} />
+						<Route path="*" element={<Navigate replace to='/' />} />
 					</Routes>
 				</context.Provider>
 			</BrowserRouter>

@@ -13,6 +13,7 @@ import { Link } from 'react-router-dom';
 import { context } from '../App';
 
 const Header = styled.header`
+	transition: .6s ease-in-out;
 	position: fixed;
 	top: 0;
 	z-index: 1;
@@ -42,7 +43,6 @@ const Header = styled.header`
 	justify-content: space-between;
 	padding: 0.2em 2em;
 	color: white;
-	transition: 0.3s ease-in-out;
 `;
 
 const StyledFontAwesomeIcon = styled(FontAwesomeIcon)`
@@ -152,19 +152,19 @@ export const Nav = () => {
 						<Link to="/series">Series</Link>
 					</List>
 					<List>
-						<Link to="/genres" onClick={()=> setGenres(28)}>
+						<Link to="/genres" onClick={() => setGenres(28)}>
 							Action
 						</Link>
-						<Link to="/genres" onClick={()=> setGenres(35)}>
+						<Link to="/genres" onClick={() => setGenres(35)}>
 							Comedy
 						</Link>
-						<Link to="/genres" onClick={()=> setGenres(99)}>
+						<Link to="/genres" onClick={() => setGenres(99)}>
 							Documentary
 						</Link>
-						<Link to="/genres" onClick={()=> setGenres(18)}>
+						<Link to="/genres" onClick={() => setGenres(18)}>
 							Drama
 						</Link>
-						<Link to="/genres" onClick={()=> setGenres(878)}>
+						<Link to="/genres" onClick={() => setGenres(878)}>
 							Science Fiction
 						</Link>
 					</List>
