@@ -4,15 +4,17 @@ import { Nav } from './components/Nav';
 import { Home } from './pages/Home';
 import { MovieDetail } from './pages/MovieDetail';
 import { Genres } from './pages/Genres';
-import styles from './App.module.css';
 import { Series } from './pages/Series';
+import { SerieDetail } from './pages/SerieDetail';
+import GlobalStyles from './components/GlobalStyles';
 
 export const context = createContext();
 
 function App() {
 	const [genres, setGenres] = useState(28);
 	return (
-		<div className={styles.app}>
+		<>
+			<GlobalStyles />
 			<BrowserRouter>
 				<context.Provider value={{ genres, setGenres }}>
 					<Nav />
@@ -21,11 +23,12 @@ function App() {
 						<Route path="/movies/:movieId" element={<MovieDetail />} />
 						<Route path="/genres" element={<Genres key={genres} />} />
 						<Route path="/series" element={<Series key={genres} />} />
+						<Route path="/series/:serieId" element={<SerieDetail />} />
 						<Route path="*" element={<Home />} />
 					</Routes>
 				</context.Provider>
 			</BrowserRouter>
-		</div>
+		</>
 	);
 }
 

@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { MoviesGrid } from '../components/MoviesGrid';
 import { Search } from '../components/Search';
+import { useDebounce } from '../hooks/useDebounce';
 import { useQuery } from '../hooks/useQuery';
 
 const Main = styled.main`
@@ -21,10 +22,11 @@ const Main = styled.main`
 export const Home = () => {
 	const query = useQuery();
 	const search = query.get('search');
+	const debouncedSearch = useDebounce(search, 300);
 	return (
 		<Main>
 			<Search />
-			<MoviesGrid key={search} search={search} />
+			<MoviesGrid key={debouncedSearch} search={debouncedSearch} />
 		</Main>
 	);
 };

@@ -119,24 +119,26 @@ const Btn = styled.button`
 	}
 `;
 
-export const MovieDetail = () => {
-	const { movieId } = useParams();
-	const [movie, setMovie] = useState(null);
+export const SerieDetail = () => {
+	const { serieId } = useParams();
+	const [serie, setSerie] = useState(null);
 	const [loader, setLoader] = useState(true);
 	const [notFound, setNotFound] = useState(false);
 
 	useEffect(() => {
 		setLoader(true);
-		get('/movie/' + movieId).then((data) => {
-			if (!data.title) {
+		get('/tv/' + serieId).then((data) => {
+			console.log(data);
+			if (!data.name) {
 				setLoader(false);
 				return setNotFound(true);
 			} else {
 				setLoader(false);
-				setMovie(data);
+				setSerie(data);
+				console.log(data);
 			}
 		});
-	}, [movieId]);
+	}, [serieId]);
 
 	if (loader) {
 		return <Loader />;
@@ -146,32 +148,32 @@ export const MovieDetail = () => {
 		return <NotFound />;
 	}
 
-	const imageUrl = 'https://image.tmdb.org/t/p/w500' + movie.poster_path;
+	const imageUrl = 'https://image.tmdb.org/t/p/w500' + serie.poster_path;
 
 	return (
 		<Main>
 			<Title>Description</Title>
 			<DetailsContainer>
 				<Image
-					src={movie.poster_path ? imageUrl : notImage}
-					alt={movie?.title}
+					src={serie.poster_path ? imageUrl : notImage}
+					alt={serie?.title}
 				/>
 				<Detail>
 					<p>
 						<strong>Title: </strong>
-						{movie?.title}
+						{serie?.title}
 					</p>
 					<p>
 						<strong>Genres: </strong>
-						{movie?.genres.map((genre) => genre.name).join(', ')}
+						{serie?.genres.map((genre) => genre.name).join(', ')}
 					</p>
 					<p>
 						<strong>Description: </strong>
-						{movie?.overview}
+						{serie?.overview}
 					</p>
-					<BtnContainer to={'/'}>
+					<BtnContainer to={'/series'}>
 						<Btn>
-							Find another movie
+							Find another serie
 							<div>
 								<svg
 									height="24"

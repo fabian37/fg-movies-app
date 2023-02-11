@@ -1,7 +1,6 @@
+import React from 'react';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useState } from 'react';
-import { useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import { useQuery } from '../hooks/useQuery';
@@ -79,22 +78,15 @@ const StyledFontAwesomeIcon = styled(FontAwesomeIcon)`
 `;
 
 export const Search = () => {
-	const [input, setInput] = useState('');
 	const navigate = useNavigate();
-
 	const query = useQuery();
 	const search = query.get('search');
-
-	useEffect(() => {
-		search ? setInput(search) : setInput('');
-	}, [search]);
-
 	const handlerSubmit = (e) => {
 		e.preventDefault();
-		navigate('/?search=' + input);
 	};
 	const handlerChange = (e) => {
-		setInput(e.target.value);
+		const value = e.target.value;
+		navigate('/?search=' + value);
 	};
 	return (
 		<Form onSubmit={handlerSubmit}>
@@ -107,7 +99,8 @@ export const Search = () => {
 						placeholder="What are you looking for?"
 						required
 						type="text"
-						value={input}
+						aria-label="Search Movies"
+						value={search ?? ''}
 						onChange={handlerChange}
 					/>
 					<Span></Span>

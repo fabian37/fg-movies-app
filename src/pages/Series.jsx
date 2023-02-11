@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { MovieCard } from '../components/MovieCard';
-import { get } from '../utils/httpClient';
-import { Loader } from '../components/Loader';
+import React from 'react';
 import styled from 'styled-components';
-import InfiniteScroll from 'react-infinite-scroll-component';
+import { Search } from '../components/Search';
+import { useQuery } from '../hooks/useQuery';
+import { SeriesGrid } from '../components/SeriesGrid';
+import { useDebounce } from '../hooks/useDebounce';
 
 const Main = styled.main`
 	padding: 2em;
@@ -19,72 +19,14 @@ const Main = styled.main`
 	}
 `;
 
-const MoviesContainer = styled.div`
-	max-width: 1248px;
-	width: 100%;
-`;
-
-const ListContainer = styled.ul`
-	width: 100%;
-	display: grid;
-	grid-template-columns: repeat(auto-fill, 14em);
-	gap: 2em;
-	justify-content: center;
-	margin: 1em 0;
-	@media (max-width: 560px) {
-		& {
-			gap: 0.5em;
-			grid-template-columns: repeat(2, 1fr);
-		}
-	}
-`;
-
-const Title = styled.h1`
-	font-size: 1em;
-	margin-top: 1em;
-	text-align: center;
-`;
-
 export const Series = () => {
-	const [movies, setMovies] = useState([]);
-	const [loader, setLoader] = useState(true);
-	const [hasMore, setHasMore] = useState(true);
-	const [page, setPage] = useState(1);
-	useEffect(() => {
-		const searchUrl = '/discover/tv?page=' + page;
-		get(searchUrl).then((data) => {
-			setMovies((prevData) => prevData.concat(data.results));
-			setHasMore(page < data.total_pages);
-			setLoader(false);
-		});
-	}, [page]);
-	if (loader) {
-		return <Loader />;
-	}
+	const query = useQuery();
+	const search = query.get('search');
+	const debouncedSearch = useDebounce(search, 300);
 	return (
 		<Main>
-			<MoviesContainer>
-				<Title>Popular Series</Title>
-				<InfiniteScroll
-					dataLength={movies.length}
-					hasMore={hasMore}
-					next={() => setPage((prePage) => prePage + 1)}
-					loader={<Loader />}
-					scrollThreshold={0.9}
-					endMessage={<p>No hay más peliculas</p>}
-				>
-					<ListContainer>
-						{movies?.map((movie) => (
-							<MovieCard
-								key={movie.id}
-								title={movie.title}
-								image={movie.poster_path}
-								id={movie.id}
-							/>
-						))}
-					</ListContainer>
-				</InfiniteScroll>
-			</MoviesContainer>
+			<Search />
+			<SeriesGrid key={debouncedSearch} search={debouncedSearch} />
 		</Main>
 	);
 };
